@@ -59,10 +59,12 @@ console.log('QUERY PARAMS ', req.query);
   }, msg.length * 1000 + 2000);
 });
 
-//app.get('/cal', (req, res) => {
-  //const month = require('node-cal/lib/month');
-  //console.log(month);
-//});
+app.get('/cal/:year/:month', (req,res) => {
+  const month = require('node-cal/lib/month');
+  console.log(month.setUpWholeMonth);
+  res.send('<pre>' + month.setUpWholeMonth(req.params.year, req.params.month) + '</pre>');
+
+});
 
 app.get('/random', (req, res) => {
   res.send(Math.random().toString());
@@ -73,7 +75,7 @@ app.get('/random/:min/:max', (req, res) => {
   const max = req.params.max;
   console.log('PARAMS ', req.params);
 
-  res.end(getRandomInt(+min, +max).toString());
+  res.send(getRandomInt(+min, +max).toString());
 });
 
 app.all('*', (req, res) => {
@@ -86,5 +88,5 @@ app.listen(PORT, () => {
 });
 
 function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (min-max)) + min;
+  return Math.floor(Math.random() * (max-min)) + min;
 }
