@@ -1,9 +1,28 @@
   'use strict';
-
+ // var $ = require('public/vendor/jquery/dist/jquery.min.js');
   const express = require('express');
   const app = express();
 
   const PORT = process.env.PORT || 3000;
+
+  app.set('view engine', 'jade');
+
+//Root route  -this compiles jade everytime you go to the root?
+  //app.get('/', (req, res) => {
+    //res.render('index', {
+      //title: 'NodeJS Web Server App',
+      //date: new Date()   //.toLocaleDateString() could go here as well and you pass JADE the string
+    //});
+  //});
+
+  app.get('/Calendar', (req, res) => {
+    res.render('index', {
+      title: 'to the Greatest Calendar App EVER!',
+      date: new Date()
+    });
+  });
+
+      
 
 
 //http.createServer((req,res) => {
