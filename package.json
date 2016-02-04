@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/schmitz1193/node-webserver#readme",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "express": "^4.13.4",
     "jade": "^1.11.0",
+    "multer": "^1.1.0",
     "node-cal": "github:schmitz1193/node-cal",
     "node-sass-middleware": "0.8.0"
   },
