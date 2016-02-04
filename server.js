@@ -4,7 +4,9 @@
   const app = express();
   const bodyParser = require('body-parser');
   const multer  = require('multer');
-  const upload = multer({ dest: 'tmp/uploads' });
+  const imgur = require('imgur');
+ // const upload = multer({ dest: 'tmp/uploads' });
+
   const path = require('path');
   const sassMiddleware = require('node-sass-middleware');
  // const appModule = require('./public/javascript/app.js');
@@ -15,7 +17,7 @@
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'jade');
 //set up an express variable passed to every res.render..something you want on every rendered page
-app.locals.title = 'to the Greatest CAlendar App Ever';
+  app.locals.title = 'to the Greatest CAlendar App Ever';
 
 //need to pass object on where or not...?
 //app.use(bodyParser.urlencoded({extended: false}));
@@ -27,7 +29,7 @@ app.locals.title = 'to the Greatest CAlendar App Ever';
     dest: path.join(__dirname, 'public'),
     indentedSyntax: true,
     sourceMap: true
-}));
+  }));
 
   app.use(express.static(path.join(__dirname, 'public')));
 
@@ -57,11 +59,33 @@ app.locals.title = 'to the Greatest CAlendar App Ever';
     res.render('sendphoto');
   });
 
-  app.post('/sendphoto', upload.single('image'), (req,res) => {
-    console.log('body ', req.body, 'file ', req.file);
-    res.send('<h1>Thanks for sending us your photo</h1>');
+//  changing the file name and sending that to imgur to be stored
+  let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'tmp/uploads')
+   },
+   filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1]);
+      console.log('Renamed file ', file);
+    }
   });
 
+  let upload = multer({ storage: storage })
+
+
+  app.post('/sendphoto', upload.single('image'), (req,res) => {
+          // Uploading the new image to Imgur
+     res.send('<h1>Thanks for sending us your photo</h1>');
+     imgur.uploadFile('tmp/uploads/' + req.file.filename)
+     .then(function (json) {
+         console.log(json.data.link);
+         fileStored = json.data.link;
+     })
+     .catch(function (err) {
+        consol.log('imgur error message');
+        console.error(err.message);
+     });
+  });
 
 //http.createServer((req,res) => {
   //console.log(req.method, req.url);

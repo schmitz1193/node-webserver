@@ -1,12 +1,10 @@
-//SendPhoto Jade
-doctype html
-html
-    head
-      title #{title}
-    body
-      .container
-        h1 Send us photos of you enjoying cal.js
-
-        form(method='post', enctype='multipart/form-data')
-          input(type='file', name='image', accept='image/*)
-          input(type='submit', value='Share your photo!')
+//sendphoto.jade
+extends layout.jade
+block head
+  title #{title}
+block content
+  .container
+  h1 Send us photos of you enjoying cal.js
+  form(method='post', enctype='multipart/form-data')
+    input(type='file', name='image', accept='image/*')
+    input(type='submit', value='Share your photo!')

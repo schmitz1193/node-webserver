@@ -1,12 +1,12 @@
-doctype html
-html
-  head
-    title=title
-    link(rel='stylesheet', type='text/css', href='stylesheets/styles.css')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
-  body
-    h1#toast Cheers #{title}
-    p The date is now #{date.toLocaleDateString('en-US')}
-    i#cheers.fa.fa-glass.fa-4x
-      script(src='../vendor/jquery/dist/jquery.min.js')
-      script(src='javascript/app.js')
+//index.jade
+extends layout.jade
+block head
+  title=title
+  link(rel='stylesheet', type='text/css', href='stylesheets/styles.css')
+  link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+block content
+  h1#toast Cheers #{title}
+  p The date is now #{date.toLocaleDateString('en-US')}
+  i#cheers.fa.fa-glass.fa-4x
+  script(src='../vendor/jquery/dist/jquery.min.js')
+  script(src='javascript/app.js')
