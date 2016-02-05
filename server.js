@@ -5,6 +5,9 @@
   const bodyParser = require('body-parser');
   const multer  = require('multer');
   const imgur = require('imgur');
+  const request = require('request');
+  const _ = require('lodash');
+  const cheerio = require('cheerio');
  // const upload = multer({ dest: 'tmp/uploads' });
 
   const path = require('path');
@@ -86,6 +89,57 @@
         console.error(err.message);
      });
   });
+
+//TOP STORIES - getting data from CNN//////////////////////////////
+  //
+//const $bannerText = $('.banner-text');  //caching the selector VERY important in frontend, affects run time to all it multiply times as below instead put in variable
+
+app.get('/api/news', (req,res) => {
+  const url = `http://cnn.com`;
+  request.get(url, (err, response, html) => {
+    if (err) throw err;
+    const news = [];
+    const $ = cheerio.load(html);  //converting html string into a cheerio obj - entire page turned into a giant jquery like object
+    news.push({
+      title: $('.banner-text').text(),
+      url: $('.banner-text').closest('a').attr('href')
+    });
+
+    const $cdHeadline = $('cd__headline');  //cache array of DOM elements
+
+    _.range(1,12).forEach(i => {
+      const $headline = $cdHeadline.eq(i);
+      news.push({
+        title: $('.cd__headline').eq(i).text(),
+        url: url + $headline.find('a').attr('href') //cd headline is a selector cache the selector??
+      });
+    });
+    res.send(news);            //converting back again
+  });
+});
+
+
+// API ////////////////////////////////////
+app.use(bodyParser.json());
+app.get('/api', (req, res) =>  {
+  res.header('Access-Contril-Allow-Origin', '*');  //when cb hits first set header then respond hello world
+});
+
+app.post('/api', (req, res) => {
+  console.log(req.body);
+  const obj = _.mapValues(req.body, val => val.toUpperCase());
+  res.send(obj);
+});
+
+app.get('/api/weather', (req,res) => {
+  const url = `https://api.forecast.io/forecast/d8036bc7483ba1872e38cbbbe00d38fe/37.8267,-122.423`;
+  request.get(url, (err, response, body) => {
+    if (err) throw err;
+    res.header('Access-Control-Allow-Origin', '*');
+    res.send(JSON.parse(body));
+  });
+});
+
 
 //http.createServer((req,res) => {
   //console.log(req.method, req.url);
