@@ -8,22 +8,23 @@
   const request = require('request');
   const _ = require('lodash');
   const cheerio = require('cheerio');
- // const upload = multer({ dest: 'tmp/uploads' });
-
+  const fs = require('fs');
+// uncomment to setup multer without file-rename/extensions
+// const upload = multer({ dest: 'tmp/uploads' });
   const path = require('path');
   const sassMiddleware = require('node-sass-middleware');
- // const appModule = require('./public/javascript/app.js');
-
   const PORT = process.env.PORT || 3000;
 
-  //view engine setup  app.set creates a variable that can be used in any file
+//set up an express variable passed to every res.render..something you want on every rendered page
+  app.locals.title = 'My first Web Server Module';
+
+//view engine setup  app.set creates a variable that can be used in any file
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'jade');
-//set up an express variable passed to every res.render..something you want on every rendered page
-  app.locals.title = 'to the Greatest CAlendar App Ever';
 
-//need to pass object on where or not...?
+///////app middleare for all post request (hits all routes)////////////////////
 //app.use(bodyParser.urlencoded({extended: false}));
+  app.use(bodyParser.json());
 
 //SASS set up
   app.use(sassMiddleware({
@@ -62,7 +63,7 @@
     res.render('sendphoto');
   });
 
-//  changing the file name and sending that to imgur to be stored
+//  changing the name on the uploaded image file name///////////////////////
   let storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'tmp/uploads')
@@ -73,8 +74,9 @@
     }
   });
 
-  let upload = multer({ storage: storage })
+//sending the uploaded image to imgur to be stored//////////////////////
 
+  let upload = multer({ storage: storage })
 
   app.post('/sendphoto', upload.single('image'), (req,res) => {
           // Uploading the new image to Imgur
@@ -83,6 +85,8 @@
      .then(function (json) {
          console.log(json.data.link);
          fileStored = json.data.link;
+         //delete the uploaded file from local storage
+         //fs.unlinkSync('tmp/uploads/' + req.file.filename);
      })
      .catch(function (err) {
         consol.log('imgur error message');
@@ -90,7 +94,7 @@
      });
   });
 
-//TOP STORIES - getting data from CNN//////////////////////////////
+//TOP STORIES - getting data from CNN //////////////////////////////
   //
 //const $bannerText = $('.banner-text');  //caching the selector VERY important in frontend, affects run time to all it multiply times as below instead put in variable
 
@@ -119,8 +123,7 @@ app.get('/api/news', (req,res) => {
 });
 
 
-// API ////////////////////////////////////
-app.use(bodyParser.json());
+// API ////////////////////////////////////////////////////////////////////////////
 app.get('/api', (req, res) =>  {
   res.header('Access-Contril-Allow-Origin', '*');  //when cb hits first set header then respond hello world
 });
@@ -192,22 +195,20 @@ console.log('QUERY PARAMS ', req.query);
     res.end();
   }, msg.length * 1000 + 2000);
 });
-///////////////////////////////////////////////////////////////////////////
 
-//Use the month calendar
+//Use the month calendar///////////////////////////////////////////////////
 app.get('/cal/:year/:month', (req,res) => {
   const month = require('node-cal/lib/month');
   console.log(month.setUpWholeMonth);
   res.send('<pre>' + month.setUpWholeMonth(req.params.year, req.params.month) + '</pre>');
-
 });
 
-//Generate a random number
+//Generate a random number///////////////////////////////////////////////////
 app.get('/random', (req, res) => {
   res.send(Math.random().toString());
 });
 
-//random number between two entered digits
+//random number between two entered digits//////////////////////////////////
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max-min)) + min;
 }
@@ -219,7 +220,7 @@ app.get('/random/:min/:max', (req, res) => {
   res.send(getRandomInt(+min, +max).toString());
 });
 
-//all remaining options
+//all remaining options///////////////////////////////////////////////////////
 app.all('*', (req, res) => {
   res.status(403)
      .send('Access Denied!');
