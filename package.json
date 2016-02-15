@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodeman server.js",
+    "dev": "nodemon server.js",
     "bower": "bower install"
   },
   "repository": {
@@ -27,6 +27,7 @@
     "imgur": "^0.1.7",
     "jade": "^1.11.0",
     "lodash": "^4.2.1",
+    "mongoose": "^4.4.3",
     "multer": "^1.1.0",
     "node-cal": "github:schmitz1193/node-cal",
     "node-sass-middleware": "0.8.0",
