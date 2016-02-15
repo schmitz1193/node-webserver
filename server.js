@@ -23,7 +23,7 @@ const MONGODB_AUTH = MONGODB_USER
 
 const MONGODB_URL = `mongodb://${MONGODB_AUTH}${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_NAME}`;
 /////////////////////////end url
-
+console.log('URL', MONGODB_URL);
 app.set('view engine', 'jade');  //set up engine to compile JADE
 
 app.locals.title = 'THE Super Cool App';
